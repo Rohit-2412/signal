@@ -20,9 +20,9 @@ Signal is a real-time chatting application available on both iOS and Android pla
 
 1.  Clone the repository using the following command:
 
-        ```
-        git clone https://github.com/yourusername/repo-name.git
-        ```
+    ```
+    git clone https://github.com/yourusername/repo-name.git
+    ```
 
 2.  Install Node.js on your system.
 3.  Install the Expo CLI globally using the following command:
