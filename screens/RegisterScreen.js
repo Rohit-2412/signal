@@ -1,8 +1,9 @@
 import { View, StatusBar, KeyboardAvoidingView, Platform, Pressable } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
-import { Button, Input, Text } from 'react-native-elements'
+import { Input, Text } from 'react-native-elements'
 import { auth } from '../firebase'
 import * as ImagePicker from 'expo-image-picker'
+import { Image } from 'react-native'
 
 const RegisterScreen = ({ navigation }) => {
 
@@ -24,13 +25,12 @@ const RegisterScreen = ({ navigation }) => {
         }
     };
 
-
     const register = () => {
         auth.createUserWithEmailAndPassword(email, password)
             .then(authUser => {
                 authUser.user.updateProfile({
                     displayName: name,
-                    photoURL: imageUrl || "https://links.papareact.com/3ke"
+                    photoURL: imageUrl || "https://links.papareact.com/3ke",
                 })
             })
             .catch(error => alert(error.message))
@@ -43,7 +43,8 @@ const RegisterScreen = ({ navigation }) => {
     }, [])
 
     return (
-        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} className="p-3 items-center justify-center flex-1 bg-white" >
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"}
+            className="p-3 items-center justify-center flex-1 bg-white -mt-12">
             <StatusBar style='light' />
 
             <Text h3 className="font-bold mb-10 text-center">Create a Signal account</Text>
@@ -58,8 +59,8 @@ const RegisterScreen = ({ navigation }) => {
                 <Input placeholder='Password' type='password' secureTextEntry value={password}
                     onChangeText={(text) => setPassword(text)} />
 
-                {/* <Input placeholder='Profile Picture URL (optional)' type='text' value={imageUrl}
-                    onChangeText={(text) => setImageUrl(text)} onSubmitEditing={register} /> */}
+                {/* if image is uploaded then display the image */}
+                {imageUrl ? <Image source={{ uri: imageUrl }} className="rounded-full h-[125] w-[125] self-center mb-2" /> : null}
 
                 <Pressable onPress={pickImageAsync} className="self-center my-2 border-[#2c6bed] border rounded-full p-[5]">
                     <Text className="text-[#2c6bed] text-center p-2 w-fit">Upload Profile Picture</Text>

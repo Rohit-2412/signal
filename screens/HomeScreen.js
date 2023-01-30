@@ -1,4 +1,4 @@
-import { View, ScrollView, SafeAreaView, TouchableOpacity, Modal, StyleSheet } from 'react-native'
+import { View, ScrollView, SafeAreaView, TouchableOpacity, Modal, StyleSheet, Pressable, Text } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import CustomListItem from '../components/CustomListItem'
 import { Avatar } from 'react-native-elements'
@@ -44,7 +44,7 @@ const HomeScreen = ({ navigation }) => {
             headerTitleStyle: { color: "black" },
             headerLeft: () => (
                 <View>
-                    <TouchableOpacity activeOpacity={0.5} onPress={signOutUser}>
+                    <TouchableOpacity>
                         <Avatar rounded source={{ uri: auth?.currentUser?.photoURL }} />
                     </TouchableOpacity>
                 </View>
@@ -55,8 +55,9 @@ const HomeScreen = ({ navigation }) => {
                         <AntDesign name="camerao" size={24} color="black" />
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={() => setModalVisible(true)}>
-                        <SimpleLineIcons name="pencil" size={24} color="black" />
+                    {/* icon for signout */}
+                    <TouchableOpacity activeOpacity={0.5} onPress={signOutUser}>
+                        <AntDesign name="logout" size={23} color="tomato" />
                     </TouchableOpacity>
                 </View>
             )
@@ -85,6 +86,11 @@ const HomeScreen = ({ navigation }) => {
                 </Modal>
             </ScrollView>
 
+            <TouchableOpacity
+                onPress={() => setModalVisible(true)}
+                className="z-10 absolute bottom-8 right-7 flex-row items-center justify-center space-x-2 bg-[#2196f3] p-5 rounded-full rounded-br-3xl">
+                <SimpleLineIcons name="pencil" size={20} color="white" />
+            </TouchableOpacity>
         </SafeAreaView>
     )
 }

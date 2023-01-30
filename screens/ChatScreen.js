@@ -119,6 +119,8 @@ const ChatScreen = ({ navigation, route }) => {
         return `${hour}:${minute} ${meridian}`
     }
 
+    // function to delete a chat
+
     return (
         <SafeAreaView className="bg-white flex-1 px-1">
             <StatusBar style='dark' />

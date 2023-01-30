@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Modal, Platform, Text, TextInput, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button, Input, Image } from "react-native-elements";
 import { StatusBar } from "expo-status-bar";
@@ -20,7 +20,11 @@ const LoginScreen = ({ navigation }) => {
 
     const signIn = () => {
         auth.signInWithEmailAndPassword(email, password)
-            .catch((error) => alert(error))
+            .catch((error) => {
+                Alert.alert("Invalid Credentials", "Please check your email and password and try again", [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }],
+                )
+            })
     }
 
 
