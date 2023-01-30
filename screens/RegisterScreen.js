@@ -1,6 +1,8 @@
-import { View, KeyboardAvoidingView, StatusBar } from 'react-native'
+import { View, StatusBar, KeyboardAvoidingView, Platform, Pressable } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 import { Button, Input, Text } from 'react-native-elements'
+import { auth } from '../firebase'
+import * as ImagePicker from 'expo-image-picker'
 
 const RegisterScreen = ({ navigation }) => {
 
@@ -8,6 +10,20 @@ const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [imageUrl, setImageUrl] = useState("")
+
+    const pickImageAsync = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        if (!result.canceled) {
+            setImageUrl(result.assets[0].uri);
+        } else {
+            alert('You did not select any image.');
+        }
+    };
+
 
     const register = () => {
         auth.createUserWithEmailAndPassword(email, password)
@@ -27,11 +43,10 @@ const RegisterScreen = ({ navigation }) => {
     }, [])
 
     return (
-
-        <KeyboardAvoidingView behavior='padding' className="p-3 items-center justify-center flex-1" >
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? "padding" : "height"} className="p-3 items-center justify-center flex-1 bg-white" >
             <StatusBar style='light' />
 
-            <Text h3 className="font-normal mb-8 text-center">Create a Signal account</Text>
+            <Text h3 className="font-bold mb-10 text-center">Create a Signal account</Text>
 
             <View className="w-[300]">
                 <Input placeholder='Full Name' autoFocus type='text' value={name}
@@ -43,13 +58,19 @@ const RegisterScreen = ({ navigation }) => {
                 <Input placeholder='Password' type='password' secureTextEntry value={password}
                     onChangeText={(text) => setPassword(text)} />
 
-                <Input placeholder='Profile Picture URL (optional)' type='text' value={imageUrl}
-                    onChangeText={(text) => setImageUrl(text)} onSubmitEditing={register} />
+                {/* <Input placeholder='Profile Picture URL (optional)' type='text' value={imageUrl}
+                    onChangeText={(text) => setImageUrl(text)} onSubmitEditing={register} /> */}
 
+                <Pressable onPress={pickImageAsync} className="self-center my-2 border-[#2c6bed] border rounded-full p-[5]">
+                    <Text className="text-[#2c6bed] text-center p-2 w-fit">Upload Profile Picture</Text>
+                </Pressable>
             </View>
 
             <View className="w-[150] mt-[10]">
-                <Button title='Register' raised onPress={register} />
+                <Pressable disabled={!(name.length && email.length && password.length)} className="rounded-lg p-[5] bg-[#2c6bed]" onPress={register}>
+                    <Text className="text-lg text-white text-center">Register</Text>
+                </Pressable>
+                <View className="my-2"></View>
             </View>
         </KeyboardAvoidingView>
     )

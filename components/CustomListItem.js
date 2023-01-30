@@ -19,7 +19,7 @@ const CustomListItem = ({ id, chatName, enterChat }) => {
         <ListItem id={id} bottomDivider onPress={() => enterChat(id, chatName)} >
             <Avatar rounded source={{
                 uri: chatMessages?.[0]?.photoURL ||
-                    "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png "
+                    "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png"
             }} />
 
             <ListItem.Content>
@@ -28,8 +28,7 @@ const CustomListItem = ({ id, chatName, enterChat }) => {
                 </ListItem.Title>
 
                 <ListItem.Subtitle numberOfLines={1} ellipsizeMode="tail">
-                    <Text className="font-bold">{chatMessages?.[0]?.displayName}{chatMessages?.[0]?.displayName ? ": " : null}</Text>{chatMessages?.[0]?.message}
-
+                    <Text className="font-medium">{chatMessages?.[0]?.displayName}{chatMessages?.[0]?.displayName ? ": " : null}</Text>{chatMessages?.[0]?.message}
                     {chatMessages?.[0]?.displayName ? null : "Start messaging!"}
                 </ListItem.Subtitle>
 

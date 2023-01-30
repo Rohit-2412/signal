@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button, Input, Image } from "react-native-elements";
 import { StatusBar } from "expo-status-bar";
@@ -25,14 +25,13 @@ const LoginScreen = ({ navigation }) => {
 
 
     return (
-        <View className=" flex-1 container items-center justify-center p-10">
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} className="flex-1 container items-center justify-center">
             <StatusBar style="light" />
 
             <Image
-                source={{
-                    uri: "https://upload.wikimedia.org/wikipedia/commons/5/56/Logo_Signal..png ",
-                }}
-                style={{ width: 200, height: 200 }}
+                source={require('../assets/signal-logo.png')}
+                style={{ width: 125, height: 125 }}
+                className="rounded-2xl mb-5"
             />
 
             <View className="w-[300]">
@@ -55,14 +54,15 @@ const LoginScreen = ({ navigation }) => {
 
             <View className="w-[200]">
                 <View className="mt-[10]">
-                    <Button title="Login" onPress={signIn} />
+                    <Button title="Login" onPress={signIn}
+                        disabled={!(email.length && password.length)}
+                    />
                 </View>
                 <View className="mt-[10]">
                     <Button title="Register" type="outline" onPress={() => navigation.navigate("Register")} />
                 </View>
-                <View className="h-[50]" />
             </View>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
 
