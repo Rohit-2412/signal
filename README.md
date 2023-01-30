@@ -1,4 +1,4 @@
-# Signal App Readme
+# Signal App
 
 Signal is a real-time chatting application available on both iOS and Android platforms. With Signal, you can chat with your friends securely and conveniently.
 
@@ -21,7 +21,7 @@ Signal is a real-time chatting application available on both iOS and Android pla
 1.  Clone the repository using the following command:
 
     ```
-    git clone https://github.com/yourusername/repo-name.git
+    https://github.com/Rohit-2412/signal.git
     ```
 
 2.  Install Node.js on your system.
