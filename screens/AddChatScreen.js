@@ -1,16 +1,14 @@
 import * as ImagePicker from 'expo-image-picker'
 
-import { Image, Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
 
 import { Input } from 'react-native-elements'
 import { Ionicons } from '@expo/vector-icons'
-import { Pressable } from 'react-native'
 import { db } from '../firebase'
 
 const AddChatScreen = ({ navigation, visible }) => {
     const [input, setInput] = useState("")
-    const [imageUrl, setImageUrl] = useState(null)
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -21,7 +19,6 @@ const AddChatScreen = ({ navigation, visible }) => {
     const createChat = async () => {
         await db.collection("chats").add({
             chatName: input,
-            chatImage: imageUrl
         }).then(() => {
             Keyboard.dismiss()
             visible(false)
