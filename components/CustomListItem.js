@@ -6,15 +6,14 @@ import { Pressable } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
 import { Ionicons } from '@expo/vector-icons'
 
-const CustomListItem = ({ id, chatName, enterChat }) => {
+const CustomListItem = ({ id, chatName, enterChat, chatImage }) => {
 
     const [chatMessages, setChatMessages] = useState([])
     const [showModal, setShowModal] = useState(false)
     const [renameModal, setRenameModal] = useState(false)
     const [newName, setNewName] = useState("")
     const [pfChange, setPfChange] = useState(false)
-    const [temp, setTemp] = useState("")
-    const [imageUrl, setImageUrl] = useState(null)
+    const [imageUrl, setImageUrl] = useState("")
 
     const pickImageAsync = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -23,7 +22,7 @@ const CustomListItem = ({ id, chatName, enterChat }) => {
         });
 
         if (!result.canceled) {
-            setTemp(result.assets[0].uri);
+            setImageUrl(result.assets[0].uri);
         } else {
             alert('You did not select any image.');
         }
@@ -61,9 +60,10 @@ const CustomListItem = ({ id, chatName, enterChat }) => {
     return (
         <ListItem id={id} bottomDivider onPress={() => enterChat(id, chatName)}
             onLongPress={() => setShowModal(true)} >
+            {/* fetch the profile picture for the chat with id, if it is null then display the default pic */}
+
             <Avatar rounded source={{
-                uri: imageUrl ||
-                    "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png"
+                uri: chatImage || "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png"
             }} size={40} />
 
             <ListItem.Content>
@@ -84,6 +84,7 @@ const CustomListItem = ({ id, chatName, enterChat }) => {
                 transparent={true}
                 visible={showModal}
                 style={{ flex: 1 }}
+
             >
                 <View
                     style={{
@@ -246,15 +247,15 @@ const CustomListItem = ({ id, chatName, enterChat }) => {
                     >
 
 
-                        {temp ? <Image source={{ uri: temp }} className="rounded-full h-[135] w-[135] self-center mb-3" /> : null}
+                        {imageUrl ? <Image source={{ uri: imageUrl }} className="rounded-full h-[135] w-[135] self-center mb-3" /> : null}
 
                         <Pressable onPress={pickImageAsync} className="self-center my-2 border-[#2c6bed] border rounded-full p-[5]">
                             <Text className="text-[#2c6bed] text-center p-2 w-fit text-lg">Upload Profile Picture</Text>
-
                         </Pressable>
+
                         <View className="flex-row items-center justify-around mt-2">
                             <Pressable onPress={() => {
-                                setTemp(null)
+                                setImageUrl(null)
                                 setPfChange(!pfChange)
                             }}>
                                 <View className="flex-row items-center justify-center gap-x-1">
@@ -264,10 +265,12 @@ const CustomListItem = ({ id, chatName, enterChat }) => {
                             </Pressable>
 
                             {
-                                temp &&
+                                imageUrl &&
                                 <Pressable
                                     onPress={() => {
-                                        setImageUrl(temp)
+                                        db.collection("chats").doc(id).update({
+                                            chatImage: imageUrl
+                                        })
                                         setPfChange(!pfChange)
                                     }}
                                 >

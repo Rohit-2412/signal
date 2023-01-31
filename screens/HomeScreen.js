@@ -75,8 +75,8 @@ const HomeScreen = ({ navigation }) => {
         <SafeAreaView className="bg-white">
             <StatusBar style="dark" />
             <ScrollView className="h-[100%]">
-                {chats.map(({ id, data: { chatName } }) => (
-                    <CustomListItem key={id} id={id} chatName={chatName} enterChat={enterChat} />
+                {chats.map(({ id, data: { chatName, chatImage } }) => (
+                    <CustomListItem key={id} id={id} chatName={chatName} enterChat={enterChat} chatImage={chatImage} />
                 ))}
 
                 <Modal visible={modalVisible} animationType='fade' transparent={true} >
