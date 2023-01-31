@@ -1,4 +1,4 @@
-import { View, ScrollView, SafeAreaView, TouchableOpacity, Modal, StyleSheet, Pressable, Text } from 'react-native'
+import { View, ScrollView, SafeAreaView, TouchableOpacity, Modal } from 'react-native'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import CustomListItem from '../components/CustomListItem'
 import { Avatar } from 'react-native-elements'

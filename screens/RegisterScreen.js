@@ -1,9 +1,11 @@
-import { View, StatusBar, KeyboardAvoidingView, Platform, Pressable } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
-import { Input, Text } from 'react-native-elements'
-import { auth } from '../firebase'
 import * as ImagePicker from 'expo-image-picker'
+
+import { Input, Text } from 'react-native-elements'
+import { KeyboardAvoidingView, Platform, Pressable, StatusBar, View } from 'react-native'
+import React, { useLayoutEffect, useState } from 'react'
+
 import { Image } from 'react-native'
+import { auth } from '../firebase'
 
 const RegisterScreen = ({ navigation }) => {
 

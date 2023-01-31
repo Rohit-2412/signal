@@ -1,10 +1,12 @@
-import { Alert, Image, KeyboardAvoidingView, Modal, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { ListItem, Avatar } from 'react-native-elements'
-import { db } from '../firebase'
-import { Pressable } from 'react-native'
 import * as ImagePicker from 'expo-image-picker'
+
+import { Alert, Image, KeyboardAvoidingView, Modal, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { Avatar, ListItem } from 'react-native-elements'
+import React, { useEffect, useState } from 'react'
+
 import { Ionicons } from '@expo/vector-icons'
+import { Pressable } from 'react-native'
+import { db } from '../firebase'
 
 const CustomListItem = ({ id, chatName, enterChat, chatImage }) => {
 

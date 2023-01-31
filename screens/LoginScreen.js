@@ -1,4 +1,4 @@
-import { Alert, KeyboardAvoidingView, Modal, Platform, Text, TextInput, View } from "react-native";
+import { Alert, KeyboardAvoidingView, Platform, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Button, Input, Image } from "react-native-elements";
 import { StatusBar } from "expo-status-bar";
