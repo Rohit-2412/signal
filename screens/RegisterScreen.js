@@ -14,25 +14,12 @@ const RegisterScreen = ({ navigation }) => {
     const [password, setPassword] = useState("")
     const [imageUrl, setImageUrl] = useState("")
 
-    const pickImageAsync = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            allowsEditing: true,
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            setImageUrl(result.assets[0].uri);
-        } else {
-            alert('You did not select any image.');
-        }
-    };
-
     const register = () => {
         auth.createUserWithEmailAndPassword(email, password)
             .then(authUser => {
                 authUser.user.updateProfile({
                     displayName: name,
-                    photoURL: imageUrl || "https://links.papareact.com/3ke",
+                    photoURL: imageUrl || "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
                 })
             })
             .catch(error => alert(error.message))
@@ -63,10 +50,6 @@ const RegisterScreen = ({ navigation }) => {
 
                 {/* if image is uploaded then display the image */}
                 {imageUrl ? <Image source={{ uri: imageUrl }} className="rounded-full h-[125] w-[125] self-center mb-2" /> : null}
-
-                <Pressable onPress={pickImageAsync} className="self-center my-2 border-[#2c6bed] border rounded-full p-[5]">
-                    <Text className="text-[#2c6bed] text-center p-2 w-fit">Upload Profile Picture</Text>
-                </Pressable>
             </View>
 
             <View className="w-[150] mt-[10]">

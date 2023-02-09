@@ -1,18 +1,11 @@
-import * as ImagePicker from 'expo-image-picker'
-
-import { Alert, Image, Keyboard, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Keyboard, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
 import React, { useLayoutEffect, useState } from 'react'
-import { db, storage } from '../firebase'
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { auth, db } from '../firebase'
 
-import { Input } from 'react-native-elements'
 import { Ionicons } from '@expo/vector-icons'
 
 const AddChatScreen = ({ navigation, visible }) => {
     const [input, setInput] = useState("")
-    const [image, setImage] = useState(null)
-    const [uploading, setUploading] = useState(false)
-    const [url, setUrl] = useState('')
 
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -20,12 +13,10 @@ const AddChatScreen = ({ navigation, visible }) => {
         })
     }, [navigation])
 
+    // add chat with whom we want to chat
     const createChat = async () => {
-        console.log('create chat')
-        console.log(input, url)
         await db.collection("chats").add({
-            chatName: input,
-            photoURL: url
+            users: [auth.currentUser.email, input],
         }).then(() => {
             Keyboard.dismiss()
             visible(false)
@@ -33,106 +24,44 @@ const AddChatScreen = ({ navigation, visible }) => {
 
     }
 
-    const pickImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            quality: 1
-        })
-
-        const source = { uri: result.assets[0].uri }
-        setImage(source)
-    };
-
-    const uploadImage = async () => {
-        // upload the image to firebase storage
-        const response = await fetch(image.uri);
-        const blob = await response.blob();
-        const filename = image.uri.substring(image.uri.lastIndexOf('/') + 1);
-
-        const storageRef = ref(storage, `profilePicture/${filename}`);
-        const uploadTask = uploadBytesResumable(storageRef, blob);
-
-        uploadTask.on('state_changed', (snapshot) => {
-            setUploading(true)
-            // console.log('snapshot progess ' + (snapshot.bytesTransferred / snapshot.totalBytes) * 100)
-        }
-            , (error) => {
-                setUploading(false)
-                // console.log(error)
-                Alert.alert('Error', error.message)
-            }
-            , () => {
-                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    setUploading(false)
-                    // console.log('File available at', downloadURL);
-                    // setUrl(downloadURL)
-                    Alert.alert('Success', 'Image uploaded')
-                    // createChat()
-                    db.collection("chats").add({
-                        chatName: input,
-                        photoURL: downloadURL
-                    }).then(() => {
-                        Keyboard.dismiss()
-                        visible(false)
-                    }).catch((error) => console.log(error))
-
-                });
-            }
-        )
-
-    }
-
-
     return (
 
-        <View className="flex-1 items-center justify-center">
-            <View style={styles.modalView}>
-                <Text className="text-2xl font-bold mb-5">Add a new Chat</Text>
-                <TouchableOpacity
-                    onPress={() => visible(false)}
-                    className="absolute top-4 right-3">
-                    <Ionicons name="close" size={30} color="black" />
-                </TouchableOpacity>
 
-                <Input placeholder="Chat name"
-                    value={input}
-                    onChangeText={(text) => setInput(text)}
-                    onSubmitEditing={createChat}
-                    containerStyle={{ width: 275 }}
-                    leftIcon={{ type: "material", name: "chat", color: "#2C6BED", size: 25 }}
-                />
-
-                {/* choose image */}
-                {
-                    image &&
-                    <View className="flex flex-row items-center justify-center">
-                        <Image source={{ uri: image.uri }} style={{ width: 100, height: 100 }} />
-                    </View>
-                }
-                {
-                    !image &&
-                    <TouchableOpacity onPress={pickImage} className="bg-[#2C6BED] rounded-full p-3 mt-3">
-                        <Text className="text-white text-center text-lg">Choose Image</Text>
-                    </TouchableOpacity>
-                }
-                {/* {
-                    image &&
-                    <TouchableOpacity onPress={uploadImage} className="bg-[#2C6BED] rounded-full p-3 mt-3">
-                        <Text className="text-white text-center text-lg">Upload Image</Text>
-                    </TouchableOpacity>
-                } */}
-                <View className="w-fit mt-3">
+        <TouchableWithoutFeedback
+            onPress={() => visible(false)}
+            className="z-0 absolute top-0 left-0 w-[100%] h-[100%]"
+        >
+            <View className="flex-1 items-center justify-center">
+                <View style={styles.modalView}>
+                    <Text className="text-2xl font-bold mb-5">Start a new Chat</Text>
                     <TouchableOpacity
-                        disabled={!input.length && !image}
-                        onPress={uploadImage}
-                        className="bg-[#2C6BED] rounded-full p-3">
-                        <Text className="text-white text-center text-lg">Create new Chat</Text>
+                        onPress={() => visible(false)}
+                        className="absolute top-3 right-3">
+                        <Ionicons name="close" size={30} color="black" />
                     </TouchableOpacity>
-                </View>
 
+                    <TextInput placeholder="Email address"
+                        style={{ width: 275 }}
+                        className="w-full h-12 border-2 border-gray-300 rounded-xl px-3 mb-2"
+                        cursorColor={"#2C6BED"}
+                        value={input}
+                        onChangeText={(text) => setInput(text)}
+                        onSubmitEditing={createChat}
+                        placeholderTextColor="gray"
+                    />
+
+                    <View className="w-fit mt-3">
+                        <TouchableOpacity
+                            disabled={!input.length}
+                            onPress={createChat}
+                            className={`${input.length ? 'bg-[#2C6BED]' : 'bg-gray-400'} rounded-full p-3`}>
+                            <Text className="text-white text-center text-lg">Create new Chat</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </View>
             </View>
-        </View>
+        </TouchableWithoutFeedback>
     )
 }
 const styles = StyleSheet.create({
