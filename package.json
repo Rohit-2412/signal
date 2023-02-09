@@ -9,9 +9,13 @@
         "web": "NODE_OPTIONS=--openssl-legacy-provider expo start --web"
     },
     "dependencies": {
+        "@emotion/react": "^11.10.5",
+        "@emotion/styled": "^11.10.5",
         "@expo/webpack-config": "^0.17.2",
+        "@mui/material": "^5.11.8",
         "@react-navigation/native": "^6.1.2",
         "@react-navigation/native-stack": "^6.9.8",
+        "@videsk/tailwind-random-color": "^0.2.0-beta",
         "chalk": "^5.2.0",
         "expo": "~47.0.12",
         "expo-blur": "~12.0.1",
