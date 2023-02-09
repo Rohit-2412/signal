@@ -3,12 +3,13 @@ import * as ImagePicker from 'expo-image-picker'
 import { Alert, Image, KeyboardAvoidingView, Modal, Platform, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { Avatar, ListItem } from 'react-native-elements'
 import React, { useEffect, useState } from 'react'
+import { db, storage } from '../firebase'
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 import { Ionicons } from '@expo/vector-icons'
 import { Pressable } from 'react-native'
-import { db } from '../firebase'
 
-const CustomListItem = ({ id, chatName, enterChat, chatImage }) => {
+const CustomListItem = ({ id, chatName, enterChat, photoURL }) => {
 
     const [chatMessages, setChatMessages] = useState([])
     const [showModal, setShowModal] = useState(false)
@@ -16,19 +17,48 @@ const CustomListItem = ({ id, chatName, enterChat, chatImage }) => {
     const [newName, setNewName] = useState("")
     const [pfChange, setPfChange] = useState(false)
     const [imageUrl, setImageUrl] = useState("")
+    const [downloadUrl, setDownloadUrl] = useState('')
 
-    const pickImageAsync = async () => {
+    const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            quality: 1,
-        });
+            quality: 1
+        })
 
-        if (!result.canceled) {
-            setImageUrl(result.assets[0].uri);
-        } else {
-            alert('You did not select any image.');
-        }
+        const source = { uri: result.assets[0].uri }
+        console.log(source)
+        setImageUrl(source)
     };
+
+    const uploadImage = async () => {
+        // upload the image to firebase storage
+        const response = await fetch(imageUrl.uri);
+        const blob = await response.blob();
+        const filename = imageUrl.uri.substring(imageUrl.uri.lastIndexOf('/') + 1);
+
+        const storageRef = ref(storage, `profilePicture/${filename}`);
+        const uploadTask = uploadBytesResumable(storageRef, blob);
+
+        uploadTask.on('state_changed', (snapshot) => {
+            setUploading(true)
+            // console.log('snapshot progess ' + (snapshot.bytesTransferred / snapshot.totalBytes) * 100)
+        }
+            , (error) => {
+                setUploading(false)
+                console.log(error)
+                Alert.alert('Error', error.message)
+            }
+            , () => {
+                getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    setUploading(false)
+                    // console.log('File available at', downloadURL);
+                    setDownloadUrl(downloadURL)
+                    // Alert.alert('Success', 'Image uploaded')
+                });
+            }
+        )
+    }
 
     useEffect(() => {
         const unsubscribe = db.collection("chats").doc(id).collection("messages").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
@@ -65,7 +95,7 @@ const CustomListItem = ({ id, chatName, enterChat, chatImage }) => {
             {/* fetch the profile picture for the chat with id, if it is null then display the default pic */}
 
             <Avatar rounded source={{
-                uri: chatImage || "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png"
+                uri: photoURL || "https://icons.iconarchive.com/icons/papirus-team/papirus-status/512/avatar-default-icon.png"
             }} size={40} />
 
             <ListItem.Content>
@@ -251,14 +281,13 @@ const CustomListItem = ({ id, chatName, enterChat, chatImage }) => {
 
                         {imageUrl ? <Image source={{ uri: imageUrl }} className="rounded-full h-[135] w-[135] self-center mb-3" /> : null}
 
-                        <Pressable onPress={pickImageAsync} className="self-center my-2 border-[#2c6bed] border rounded-full p-[5]">
+                        <Pressable onPress={pickImage} className="self-center my-2 border-[#2c6bed] border rounded-full p-[5]">
                             <Text className="text-[#2c6bed] text-center p-2 w-fit text-lg">Upload Profile Picture</Text>
                         </Pressable>
 
                         <View className="flex-row items-center justify-around mt-2">
                             <Pressable onPress={() => {
                                 setImageUrl(null)
-                                setPfChange(!pfChange)
                             }}>
                                 <View className="flex-row items-center justify-center gap-x-1">
                                     <Text className="text-lg text-center text-red-500">Cancel</Text>
@@ -269,12 +298,7 @@ const CustomListItem = ({ id, chatName, enterChat, chatImage }) => {
                             {
                                 imageUrl &&
                                 <Pressable
-                                    onPress={() => {
-                                        db.collection("chats").doc(id).update({
-                                            chatImage: imageUrl
-                                        })
-                                        setPfChange(!pfChange)
-                                    }}
+                                    onPress={uploadImage}
                                 >
                                     <View className="flex-row items-center justify-center gap-x-1">
                                         <Text className="text-lg text-center text-green-500">Confirm</Text>

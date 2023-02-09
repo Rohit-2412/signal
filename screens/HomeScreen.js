@@ -1,11 +1,12 @@
-import { View, ScrollView, SafeAreaView, TouchableOpacity, Modal } from 'react-native'
-import React, { useEffect, useLayoutEffect, useState } from 'react'
-import CustomListItem from '../components/CustomListItem'
-import { Avatar } from 'react-native-elements'
-import { auth, db } from '../firebase'
 import { AntDesign, SimpleLineIcons } from '@expo/vector-icons'
+import { Modal, SafeAreaView, ScrollView, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
+import { auth, db } from '../firebase'
+
 import AddChatScreen from './AddChatScreen'
+import { Avatar } from 'react-native-elements'
 import { BlurView } from 'expo-blur';
+import CustomListItem from '../components/CustomListItem'
 import { StatusBar } from 'expo-status-bar'
 
 const HomeScreen = ({ navigation }) => {
@@ -27,7 +28,7 @@ const HomeScreen = ({ navigation }) => {
     }
 
     useEffect(() => {
-        const unsubscribe = db.collection('chats').onSnapshot((snapshot) =>
+        const unsubscribe = db.collection('chats').orderBy('chatName', 'asc').onSnapshot((snapshot) =>
             setChats(snapshot.docs.map((doc) => ({
                 id: doc.id,
                 data: doc.data()
@@ -75,8 +76,8 @@ const HomeScreen = ({ navigation }) => {
         <SafeAreaView className="bg-white">
             <StatusBar style="dark" />
             <ScrollView className="h-[100%]">
-                {chats.map(({ id, data: { chatName, chatImage } }) => (
-                    <CustomListItem key={id} id={id} chatName={chatName} enterChat={enterChat} chatImage={chatImage} />
+                {chats.map(({ id, data: { chatName, photoURL } }) => (
+                    <CustomListItem key={id} id={id} chatName={chatName} enterChat={enterChat} photoURL={photoURL} />
                 ))}
 
                 <Modal visible={modalVisible} animationType='fade' transparent={true} >

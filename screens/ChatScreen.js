@@ -1,10 +1,11 @@
-import { View, Text, TouchableOpacity, SafeAreaView, KeyboardAvoidingView, Platform, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard, StyleSheet, Modal } from 'react-native'
-import React, { useLayoutEffect, useState } from 'react'
-import { Avatar } from 'react-native-elements'
 import { FontAwesome, Ionicons } from '@expo/vector-icons'
+import { Keyboard, KeyboardAvoidingView, Modal, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native'
+import React, { useLayoutEffect, useState } from 'react'
+import { auth, db } from '../firebase'
+
+import { Avatar } from 'react-native-elements'
 import { StatusBar } from 'expo-status-bar'
 import firebase from 'firebase/compat/app'
-import { db, auth } from '../firebase'
 
 const ChatScreen = ({ navigation, route }) => {
 
@@ -29,9 +30,6 @@ const ChatScreen = ({ navigation, route }) => {
             ),
             headerRight: () => (
                 <View className="flex-row items-center justify-between space-x-3">
-                    <TouchableOpacity activeOpacity={0.5}  >
-                        <FontAwesome name="video-camera" size={22} color="white" />
-                    </TouchableOpacity>
 
                     <TouchableOpacity activeOpacity={0.5}  >
                         <Ionicons name="call" size={22} color="white" />

@@ -20,7 +20,7 @@
         },
         "android": {
             "adaptiveIcon": {
-                "foregroundImage": "./assets/1.png",
+                "foregroundImage": "./assets/signal-logo.png",
                 "backgroundColor": "#FFFFFF"
             },
             "package": "com.rk212300.signal"
